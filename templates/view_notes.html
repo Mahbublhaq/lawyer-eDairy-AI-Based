@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Notes</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1556740714-a8395b3bf30e');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #fff;
+        }
+        .table-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-out;
+            margin-left:10%;
+            width:100%; 
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .highlight {
+            border: 2px solid red;
+        }
+        .marked {
+            color: red;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .sidebar a i {
+            margin-right: 10px;
+        }
+      
+    </style>
+</head>
+
+<div class="sidebar">
+    <a herf="/lawyer_dashboard" class="sidebar-item"><i class="fas fa-home"></i> Home</a>
+    <a href="/lawyer_dashboard" class="sidebar-item" onclick="showSection('appointments')"><i class="fas fa-calendar-alt"></i> Appointments</a>
+    <a href="/lawyer_dashboard" class="sidebar-item" onclick="showSection('messages')"><i class="fas fa-envelope"></i> Messages</a>
+    <a href="/profile" class="sidebar-item"><i class="fas fa-user"></i> Profile</a>
+    <a href="/add_case" class="sidebar-item"><i class="fas fa-briefcase"></i> Add Case</a>
+    <a href="/add_note" class="sidebar-item"><i class="fas fa-sticky-note"></i> Add Note</a>
+    <a href="/view_notes" class="sidebar-item"><i class="fas fa-book"></i> View Notes</a>
+    <a href="/logout" class="sidebar-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="table-container">
+                    <h1 class="text-center">Your Notes</h1>
+                    <form id="searchForm" class="form-inline mb-4">
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="searchCategory" class="sr-only">Category</label>
+                            <input type="text" class="form-control" id="searchCategory" placeholder="Search by Category">
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2">Search</button>
+                    </form>
+                    <table border="1" class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>User Name</th>
+                                <th>Case No</th>
+                                <th>Case Title</th>
+                                <th>Case Date</th>
+                                <th>Judge Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notesTable">
+                            {% for note in notes %}
+                            <tr>
+                                <td>{{ note[2] }}</td>
+                                <td>{{ note[3] }}</td>
+                                <td>{{ note[4] }}</td>
+                                <td>{{ note[5] }}</td>
+                                <td>{{ note[6] }}</td>
+                                <td>{{ note[7] }}</td>
+                                <td>{{ note[8] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let searchCategory = document.getElementById('searchCategory').value.toLowerCase();
+            if (searchCategory) {
+                let table = document.getElementById('notesTable');
+                let rows = table.getElementsByTagName('tr');
+                for (let row of rows) {
+                    let cells = row.getElementsByTagName('td');
+                    for (let cell of cells) {
+                        if (cell.textContent.toLowerCase().includes(searchCategory)) {
+                            cell.innerHTML = cell.innerHTML.replace(new RegExp(searchCategory, 'gi'), match => `<span class="marked">${match}</span>`);
+                        }
+                    }
+                }
+            } else {
+                alert('Please enter a category to search.');
+            }
+        });
+
+        // Check if a category search has been performed
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('category')) {
+            let searchCategory = urlParams.get('category');
+            document.getElementById('searchCategory').classList.add('highlight');
+            document.getElementById('searchCategory').value = searchCategory;
+            // Trigger the search to highlight results
+            document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+        }
+    </script>
+</body>
+</html>

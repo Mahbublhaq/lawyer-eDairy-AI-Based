@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            background-color: #343a40;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateZ(0);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        .card-title {
+            color: #343a40;
+            font-weight: bold;
+        }
+        .btn-primary, .btn-danger, .btn-success {
+            border-radius: 25px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-primary:hover, .btn-danger:hover, .btn-success:hover {
+            transform: scale(1.05);
+        }
+        .chatbot-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .input-container {
+            margin-bottom: 20px;
+        }
+        .input-container input[type="text"] {
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            margin-right: 10px;
+        }
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+        .response-container {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            min-height: 100px;
+            background-color: #f9f9f9;
+            text-align: left;
+            overflow-wrap: break-word;
+            margin-top: 20px;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .containermy-4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            background-color: #f5f5f5;
+        }
+        .case-detail {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #e3e3e3;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .read-more-btn {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    transition: background-color 0.3s, transform 0.3s;
+}
+.btn btn-primary read-more-btn{
+    margin-left: 10;
+}
+.read-more-btn a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+   
+}
+
+.read-more-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+    
+}
+
+.read-more-btn a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+h4{
+    text-align: center;
+    color: rgb(78, 102, 95);
+}  
+
+
+.sidebar-item {
+    color: rgb(238, 109, 10);
+    text-decoration: none;
+    font-size: 18px;
+    margin-left: 10px;
+    margin-top: 10px;
+    float: right;
+}
+.sidebar-item:hover {
+    color: #c90404;
+}
+ 
+h3{
+             font-size: 24px;
+            background-image: linear-gradient(to right, red, blue);
+            -webkit-background-clip: text;
+            color: transparent;
+
+
+}
+p{
+    
+    font-weight: bold;
+}
+.appointment, img{
+    width: 200px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+/* id="im"  have a img make it 500 px width proper way */
+#im{
+    width: 1500px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="dashboard-header text-center">
+            <h1 class="d-flex justify-content-center align-items-center">
+                <i class="fas fa-gavel mr-2"></i>
+                User Dashboard
+            </h1>
+            <a href="/logout" class="sidebar-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <h3>Welcome, {{ session['user'][1] }}</h3>
+            <p>User ID: {{ session['user'][0] }}</p>
+        
+        </div>
+        <!-- The rest of your content goes here -->
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Recent Cases Section -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-center"> Cases Information </h3>
+                        <div class="card-body" id="case-list">
+                            <!-- Case details will be populated here -->
+                            
+                        </div>
+                        <button class="btn btn-primary read-more-btn">
+                            <a href="/case.html">Read More Case Information</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Chatbot Section -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Chat Jiggasa</h3>
+                        <h4>Personal AI Assistant</h4>
+                        <marquee style="color:red">Please Click Here If You have Any Query About Bangladeshi Law</marquee>
+                        <img src="/static/chatbot.jpg" style="width:500px">
+                        <a href="/chat" class="btn btn-success btn-lg btn-block">!Ask Me</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+            .card-title.text-center {
+                margin-bottom: 20px;
+            }
+            .card-body {
+                padding: 20px;
+            }
+        </style>
+        
+
+
+        <div class="row">
+            <!-- Send Message to Lawyer Section -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Send Message to a Lawyer</h3>
+                        <form action="/send_message" method="POST">
+                            <div class="form-group">
+                                <label for="lawyer_id">Select Lawyer</label>
+                                <select id="lawyer_id" name="lawyer_id" class="form-control" required>
+                                    {% for lawyer in lawyers %}
+                                    <option value="{{ lawyer[0] }}">{{ lawyer[1] }} - {{ lawyer[2] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message_content">Message</label>
+                                <textarea id="message_content" name="message_content" class="form-control" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Your Messages Section -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Your Messages</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped message-table">
+                                <thead>
+                                    <tr>
+                                        <th>Message</th>
+                                        <th>Reply</th>
+                                        <th>Status</th>
+                                        <th>Lawyer Name</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for message in messages %}
+                                    <tr>
+                                        <td>{{ message[1] }}</td>
+                                        <td>{{ message[2] if message[2] else 'No reply yet' }}</td>
+                                        <td>{{ message[3] }}</td>
+                                        <td>{{ message[6] }}</td>
+                                        <td>
+                                            <form action="/delete" method="POST">
+                                                <input type="hidden" name="message_id" value="{{ message[0] }}">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+            .card-title.text-center {
+                margin-bottom: 20px;
+            }
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            .btn-block {
+                width: 100%;
+            }
+        </style>
+      <div class="container mt-4">
+        <div class="row">
+            <!-- Your Appointments Section -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Your Appointments</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Lawyer Name</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in appointments %}
+                                    <tr>
+                                        <td>{{ appointment[1] }}</td>
+                                        <td>{{ appointment[2] }}</td>
+                                        <td>{{ appointment[3] }}</td>
+                                        <td>{{ appointment[4] }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Book Appointment Section -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="card-title text-center">Book Appointment</h3>
+                        <p class="text-center" style="color:lightslategray">Book an appointment with a lawyer for personalized assistance.</p>
+                       <div class="appointment"> <img src="/static/appointment.png" alt="Book Appointment" class="img-fluid"></div>
+                        <div class="mt-auto">
+                            <a href="/lawyer_appointment" class="btn btn-success btn-block">Book Appointment</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .card-title {
+            margin-bottom: 20px;
+        }
+        .btn-block {
+            width: 100%;
+        }
+    </style>
+    
+
+
+
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script>
+       
+        fetch('/api/cases')
+    .then(response => response.json())
+    .then(data => {
+        const caseList = document.getElementById('case-list');
+        const limitedData = data.slice(0, 2); // Limit to 2 cases
+        limitedData.forEach(c => {
+            const caseDiv = document.createElement('div');
+            caseDiv.className = 'case-detail';
+            const words = c.description.split(' ');
+            const shortDescription = words.slice(0, 20).join(' ');
+            const moreButton = words.length > 20 ? `<button onclick="redirectToCasePage()">More</button>` : '';
+
+            caseDiv.innerHTML = `
+                <div>
+                    <strong>Case No:</strong> ${c.case_no} <br>
+                    <strong>Case Title:</strong> ${c.case_title} <br>
+                    <strong>Advocate:</strong> ${c.judge_name} <br>
+                    <strong>Lawyer Name:</strong> ${c.lawyer_name} <br>
+                    <strong>Description:</strong> ${shortDescription} ${moreButton}
+                </div>`;
+            caseList.appendChild(caseDiv);
+        });
+    });
+
+function redirectToCasePage() {
+    window.location.href = '/case.html';
+}
+
+    </script>
+</body>
+</html>

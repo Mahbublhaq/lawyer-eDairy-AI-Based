@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Note</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1499084732479-de2c02d45fc4');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #fff;
+        }
+        .form-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: slideIn 1s ease-out;
+            margin-left:20%;
+            width: 100%;
+            
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .sidebar a i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="/lawyer_dashboard" class="sidebar-item"><i class="fas fa-home"></i> Home</a>
+        <a href="/lawyer_dashboard" class="sidebar-item" onclick="showSection('appointments')"><i class="fas fa-calendar-alt"></i> Appointments</a>
+        <a href="/lawyer_dashboard" class="sidebar-item" onclick="showSection('messages')"><i class="fas fa-envelope"></i> Messages</a>
+        <a href="/profile" class="sidebar-item"><i class="fas fa-user"></i> Profile</a>
+        <a href="/add_case" class="sidebar-item"><i class="fas fa-briefcase"></i> Add Case</a>
+        <a href="/add_note" class="sidebar-item"><i class="fas fa-sticky-note"></i> Add Note</a>
+        <a href="/view_notes" class="sidebar-item"><i class="fas fa-book"></i> View Notes</a>
+        <a href="/logout" class="sidebar-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="form-container mt-5 p-4">
+                    <h1 class="text-center">Add Note</h1>
+                    <form id="addNoteForm" action="/add_note" method="post">
+                        <div class="form-group">
+                            <label for="category">Category:</label>
+                            <input type="text" class="form-control" id="category" name="category" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user_name">User Name:</label>
+                            <input type="text" class="form-control" id="user_name" name="user_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="case_no">Case No:</label>
+                            <input type="text" class="form-control" id="case_no" name="case_no" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="case_title">Case Title:</label>
+                            <input type="text" class="form-control" id="case_title" name="case_title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="case_date">Case Date:</label>
+                            <input type="date" class="form-control" id="case_date" name="case_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="judge_name">Judge Name:</label>
+                            <input type="text" class="form-control" id="judge_name" name="judge_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Add Note</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('addNoteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Form validation and submission logic
+            let category = document.getElementById('category').value;
+            let userName = document.getElementById('user_name').value;
+            let caseNo = document.getElementById('case_no').value;
+            let caseTitle = document.getElementById('case_title').value;
+            let caseDate = document.getElementById('case_date').value;
+            let judgeName = document.getElementById('judge_name').value;
+            let description = document.getElementById('description').value;
+
+            if (category && userName && caseNo && caseTitle && caseDate && judgeName && description) {
+                this.submit();
+                alert('Note added successfully!');
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+    </script>
+</body>
+</html>

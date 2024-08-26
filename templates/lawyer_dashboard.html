@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawyer Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 50px;
+            padding-left: 250px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .modal-content {
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            background-color: #28a745;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .template-card {
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .template-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .template-card .card-body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 150px;
+        }
+        .template-card .card-body i {
+            font-size: 48px;
+        }
+        .template-card.appointments {
+            background: rgb(63,94,251);
+            background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+            color: white;
+        }
+        .template-card.messages {
+            background: rgb(255,195,113);
+            background: linear-gradient(90deg, rgba(255,195,113,1) 0%, rgba(255,87,34,1) 100%);
+            color: white;
+        }
+        .template-card.add_case {
+            background: rgb(255,195,113);
+            background: linear-gradient(90deg, rgba(155,295,713,1) 0%, rgba(255,87,34,1) 100%);
+            color: white;
+        }
+        .template-card.add_note {
+            background: rgb(63,94,251);
+            background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(70,252,194,1) 100%);
+            color: white;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #212529;
+            padding-top: 50px;
+        }
+        .sidebar-item {
+            padding: 10px 20px;
+            display: block;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .sidebar-item:hover {
+            background-color: #343a40;
+        }
+        .sidebar-item i {
+            margin-right: 10px;
+        }
+        .view_note {
+            background: rgb(63,94,251);
+            background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(70,252,194,1) 100%);
+            color: white;
+        }
+        h5 {
+            color: white;
+            margin-bottom: 10px;
+        }
+        .modal-minimized {
+            height: 50px;
+            width: 200px;
+            overflow: hidden;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            transition: width 0.3s;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px 5px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+        }
+        .minimize-btn, .restore-btn, .close-btn {
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .minimized-windows {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .card-title{
+            font-size: 30px;
+            margin-bottom: 0;
+            font-weight: bold;
+            text-align: center;
+            color:black;
+        }
+        .modal-title{
+            font-size: 25px;
+            margin-bottom: 0;
+            font-weight: bold;
+            text-align: center;
+            color:black;
+        }
+        .btn-secondary {
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            color: #fff;
+            background-color: #0056b3;
+            border-color: #004f9b;
+        }
+        #cl:hover {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="#" class="sidebar-item" onclick="showSection('appointments')"><i class="fas fa-calendar-alt"></i> Appointments</a>
+        <a href="#" class="sidebar-item" onclick="showSection('messages')"><i class="fas fa-envelope"></i> Messages</a>
+        <a href="/profile" class="sidebar-item"><i class="fas fa-user"></i> Profile</a>
+        <a href="/add_case" class="sidebar-item"><i class="fas fa-briefcase"></i> Add Case</a>
+        <a href="/add_note" class="sidebar-item"><i class="fas fa-sticky-note"></i> Add Note</a>
+        <a href="/view_notes" class="sidebar-item"><i class="fas fa-book"></i> View Notes</a>
+        <a href="/logout" class="sidebar-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="container">
+        <h1 class="mb-4">Lawyer Dashboard</h1>
+        <h3>Welcome, {{ session['user'][1] }}</h3>
+        <p>User ID: {{ session['user'][0] }}</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card template-card appointments" onclick="showModal('appointmentsModal')">
+                    <div class="card-body">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4 class="ml-3">Appointments</h4>
+                    </div>
+                   <div class="ap"> <h5 class="ap">Pending Appointments: <span style="color: darkred;">{{ pending_appointments }}</span></h5></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card template-card messages" onclick="showModal('messagesModal')">
+                    <div class="card-body">
+                        <i class="fas fa-envelope"></i>
+                        <h4 class="ml-3">Messages</h4>
+                    </div>
+                    <h5 class="ap">Unread Messages:<span style="color: darkred;">{{ unread_messages }}</span></h5>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card template-card add_case">
+                    <div class="card-body">
+                        <i class="fas fa-briefcase"></i>
+                        <a href="/add_case" class="text-white"><h4 class="ml-3">Add Case</h4></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card template-card add_note">
+                    <div class="card-body">
+                        <i class="fas fa-sticky-note"></i>
+                        <a href="/add_note" class="text-white"><h4 class="ml-3">Add Note</h4></a>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card template-card view_note">
+                    <div class="card-body">
+                        <i class="fas fa-book"></i>
+                        <a href="/view_notes" class="text-white"><h4 class="ml-3">View Notes</h4></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointments Modal -->
+    <div class="modal fade" id="appointmentsModal" tabindex="-1" aria-labelledby="appointmentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="appointmentsModalLabel">Appointments</h5>
+                    <button type="button" class="close" onclick="minimizeModal('appointmentsModal')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your appointments content here -->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Appointment ID</th>
+                                <th>User Name</th>
+                                <th>User Phone</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment[0] }}</td>
+                                <td>{{ appointment[2] }}</td>
+                                <td>{{ appointment[3] }}</td>
+                                <td>{{ appointment[6] }}</td>
+                                <td>{{ appointment[7] }}</td>
+                                <td>{{ appointment[8] }}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateModal" 
+                                        data-id="{{ appointment[0] }}" data-status="{{ appointment[8] }}" 
+                                        data-date="{{ appointment[6] }}" data-time="{{ appointment[7] }}">Update</button>
+                                </td>
+                                <td>
+                                    <form method="POST" action="/delete_appointment">
+                                        <input type="hidden" name="appointment_id" value="{{ appointment[0] }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="minimizeModal('appointmentsModal')">Minimize</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages Modal -->
+    <div class="modal fade" id="messagesModal" tabindex="-1" aria-labelledby="messagesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messagesModalLabel">Messages</h5>
+                    <button type="button" class="close" onclick="minimizeModal('messagesModal')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your messages content here -->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>User Phone</th>
+                                <th>Message</th>
+                                <th>Reply</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for message in messages %}
+                            <tr>
+                                <td>{{ message[4] }}</td>
+                                <td>{{ message[5] }}</td>
+                                <td>{{ message[1] }}</td>
+                                <td>{{ message[2] if message[2] else 'No reply yet' }}</td>
+                                <td>{{ message[3] }}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#replyModal" 
+                                        data-id="{{ message[0] }}" data-message="{{ message[1] }}" 
+                                        data-reply="{{ message[2] }}" data-status="{{ message[3] }}">Reply</button>
+                                </td>
+                                <td>
+                                    <form method="POST" action="/delete_message">
+                                        <input type="hidden" name="message_id" value="{{ message[0] }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="minimizeModal('messagesModal')">Minimize</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!-- Update Appointment Modal -->
+     <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Update Appointment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateForm" method="POST" action="/update_appointment">
+                        <input type="hidden" id="appointment_id" name="appointment_id">
+                        <div class="form-group">
+                            <label for="appointment_status">Status</label>
+                            <select id="appointment_status" name="appointment_status" class="form-control" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointment_date">Date</label>
+                            <input type="date" id="appointment_date" name="appointment_date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointment_time">Time</label>
+                            <input type="time" id="appointment_time" name="appointment_time" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reply Message Modal -->
+    <div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="replyModalLabel">Reply to Message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="replyForm" method="POST" action="/reply_message">
+                        <input type="hidden" id="message_id" name="message_id">
+                        <div class="form-group">
+                            <label for="message_content">Message</label>
+                            <textarea id="message_content" name="message_content" class="form-control" rows="3" disabled></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="reply_content">Reply</label>
+                            <textarea id="reply_content" name="reply_content" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select id="status" name="status" class="form-control" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Send Reply</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="minimized-windows">
+        <div id="minimizedAppointments" class="modal-minimized" style="display:none;">
+            <span>Appointments</span>
+            <i class="fas fa-window-restore restore-btn" onclick="restoreModal('appointmentsModal')"></i>
+            <i class="fas fa-times close-btn" onclick="closeMinimized('minimizedAppointments')"></i>
+        </div>
+        <div id="minimizedMessages" class="modal-minimized" style="display:none;">
+            <span>Messages</span>
+            <i class="fas fa-window-restore restore-btn" onclick="restoreModal('messagesModal')"></i>
+            <i class="fas fa-times close-btn" onclick="closeMinimized('minimizedMessages')"></i>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function showModal(modalId) {
+            $('#' + modalId).modal('show');
+        }
+
+        function minimizeModal(modalId) {
+            $('#' + modalId).modal('hide');
+            const minimizedId = 'minimized' + modalId.charAt(0).toUpperCase() + modalId.slice(1, -5);
+            document.getElementById(minimizedId).style.display = 'flex';
+        }
+
+        function restoreModal(modalId) {
+            $('#' + modalId).modal('show');
+            const minimizedId = 'minimized' + modalId.charAt(0).toUpperCase() + modalId.slice(1, -5);
+            document.getElementById(minimizedId).style.display = 'none';
+        }
+
+        function closeMinimized(minimizedId) {
+            document.getElementById(minimizedId).style.display = 'none';
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

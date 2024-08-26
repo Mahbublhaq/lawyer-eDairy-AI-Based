@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #141e30 0%, #243b55 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1.5s;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            flex: 1;
+        }
+
+        .card-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.5s, box-shadow 0.5s, border 0.5s;
+            animation: fadeInUp 1.5s;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid #fff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-images img {
+            width: 100%;
+            height: auto;
+            display: none;
+            border-radius: 15px;
+            transition: transform 0.5s;
+        }
+
+        .welcome-images img.active {
+            display: block;
+            animation: fadeIn 1.5s;
+        }
+
+        .welcome-images img:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .btn-custom {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 0.75rem 1.5rem;
+            transition: background 0.3s ease-in-out, transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1.5s;
+            margin-top: 10px;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-3px);
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .card-custom {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .case-detail {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: border 0.5s;
+            animation: fadeIn 1.5s;
+        }
+
+        .case-detail:hover {
+            border: 1px solid #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Welcome to Our Page</h1>
+    </header>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-custom shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0">Recent Cases</h2>
+                    </div>
+                    <div class="card-body" id="case-list">
+                        <!-- Case details will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-custom shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0">Welcome Images</h2>
+                    </div>
+                    <div class="card-body p-0 welcome-images">
+                        <img src="{{ url_for('static', filename='/pic1.jpg') }}" alt="Welcome Image 1" class="active">
+                        <img src="{{ url_for('static', filename='/pic2.png') }}" alt="Welcome Image 2">
+                        <img src="{{ url_for('static', filename='/pic3.jpg') }}" alt="Welcome Image 3">
+                    </div>
+                    <div class="text-center my-4">
+                        <a href="/login" class="btn btn-custom mx-2">Login</a>
+                        <a href="/signup" class="btn btn-custom mx-2">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 lawyer_edairy Company. All rights reserved.
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let currentImageIndex = 0;
+        const images = document.querySelectorAll('.welcome-images img');
+        setInterval(() => {
+            images[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].classList.add('active');
+        }, 3000);
+
+        fetch('/api/cases')
+            .then(response => response.json())
+            .then(data => {
+                const caseList = document.getElementById('case-list');
+                const limitedData = data.slice(0, 2); // Limit to 2 cases
+                limitedData.forEach(c => {
+                    const caseDiv = document.createElement('div');
+                    caseDiv.className = 'case-detail';
+                    const words = c.description.split(' ');
+                    const shortDescription = words.slice(0, 20).join(' ');
+                    const moreButton = words.length > 20 ? `<button onclick="showLoginSignupAlert()">More</button>` : '';
+
+                    caseDiv.innerHTML = `
+                        <div>
+                            <strong>Case No:</strong> ${c.case_no} <br>
+                            <strong>Case Title:</strong> ${c.case_title} <br>
+                            <strong>Advocate:</strong> ${c.judge_name} <br>
+                            <strong>Lawyer Name:</strong> ${c.lawyer_name} <br>
+                            <strong>Description:</strong> ${shortDescription} ${moreButton}
+                        </div>`;
+                    caseList.appendChild(caseDiv);
+                });
+            });
+
+        function showLoginSignupAlert() {
+            alert('Please Login/Signup');
+        }
+    </script>
+</body>
+
+</html>
